@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Water Companion · Prototype test</title>
+  <style>
+    :root { --ink:#183a3d; --muted:#61797b; --teal:#087e83; --deep:#075e65; --blue:#65c8df; --pale:#e7f8f7; --line:#d7e8e8; --coral:#e9a482; --shadow:0 20px 65px #164c5520; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:radial-gradient(circle at 10% 0%,#d9f4f2 0,transparent 37%),radial-gradient(circle at 100% 100%,#ecedff 0,transparent 36%),#f7fbf9; }
+    button { font:inherit; cursor:pointer; }
+    button:focus-visible { outline:3px solid #ef9d54; outline-offset:3px; }
+    .wrap { max-width:700px; margin:0 auto; padding:30px 20px 80px; }
+    .app { max-width:640px; margin:0 auto; width:100%; background:white; min-height:690px; border:1px solid #e6eeee; border-radius:32px; box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+    .app-header { padding:24px 28px 12px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:800; font-size:20px; letter-spacing:-.04em; }
+    .brand-mark { width:38px; height:38px; border-radius:13px; display:grid; place-items:center; background:#d7f3f2; color:#087e83; font-size:23px; }
+    .top-badge { color:var(--deep); background:#e6f7f3; border-radius:50px; padding:6px 12px; font-size:12px; font-weight:750; white-space:nowrap; }
+    main { flex:1; padding:12px 28px 28px; }
+    h1 { font-size:29px; line-height:1.16; letter-spacing:-.04em; margin:12px 0 8px; }
+    h2 { font-size:20px; letter-spacing:-.025em; margin:0 0 8px; }
+    p { margin:7px 0; }
+    .muted { color:var(--muted); }
+    .eyebrow { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:var(--teal); }
+    .hero { border-radius:26px; background:linear-gradient(150deg,#e8fbf8,#e9f3fe); padding:22px; text-align:center; margin:20px 0; }
+    .slime-area { height:235px; display:grid; place-items:center; }
+    svg.slime { display:block; filter:drop-shadow(0 15px 11px #15777d23); transition:width .25s ease; }
+    .hero-row { display:flex; justify-content:space-between; align-items:flex-end; gap:12px; text-align:left; }
+    .hero-row strong { font-size:21px; }
+    .stat-label { color:var(--muted); font-size:12px; font-weight:650; display:block; }
+    .progress { height:12px; background:#cce6e7; border-radius:20px; overflow:hidden; margin:14px 0 4px; }
+    .progress > span { display:block; height:100%; background:#1597a8; border-radius:20px; transition:width .25s ease; }
+    .card { border:1px solid var(--line); border-radius:20px; padding:18px; margin:16px 0; background:white; }
+    .card.soft { background:#f4fbfa; }
+    .card.warn { border-color:#efd8cf; background:#fff8f4; }
+    .row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .pill { border-radius:999px; background:#e6f7f2; color:#126c68; font-size:12px; font-weight:800; padding:5px 11px; white-space:nowrap; }
+    .pill.off { background:#ecf0f1; color:#52686a; }
+    .pill.warn { background:#ffe8dc; color:#94583a; }
+    .primary,.secondary,.quiet,.choice { border-radius:14px; min-height:46px; padding:11px 16px; font-weight:750; }
+    .primary { background:var(--teal); color:white; border:1px solid var(--teal); }
+    .primary:hover { background:var(--deep); }
+    .secondary { background:#eef9f7; color:var(--deep); border:1px solid #bde2dd; }
+    .quiet { background:white; color:var(--ink); border:1px solid var(--line); }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:17px; }
+    .actions > button { flex:1 1 140px; }
+    .notice { margin-top:12px; padding:12px 14px; background:#e7f7f2; color:#115c55; border-radius:12px; font-weight:650; }
+    .choice { width:100%; display:flex; align-items:center; justify-content:space-between; margin:9px 0; background:white; color:var(--ink); border:1px solid var(--line); text-align:left; }
+    .choice:hover { background:#eefaf8; border-color:#a9d9d7; }
+    .section-note { font-size:14px; color:var(--muted); }
+    .toggle-row { width:100%; display:flex; align-items:center; justify-content:space-between; border:0; padding:14px 0; background:transparent; text-align:left; color:var(--ink); }
+    .switch { width:51px; height:29px; background:#0c8585; border-radius:99px; display:flex; align-items:center; padding:3px; transition:background .2s; flex-shrink:0; }
+    .switch::after { content:""; display:block; width:23px; height:23px; background:white; border-radius:50%; transform:translateX(22px); transition:transform .2s; }
+    .switch.off { background:#9aadb0; }
+    .switch.off::after { transform:translateX(0); }
+    .friend-preview { background:#f6fafb; border:1px solid var(--line); border-radius:17px; padding:16px; margin-top:12px; }
+    .friend-preview ul { margin:9px 0 0; padding-left:20px; }
+    .friend-preview li { margin:5px 0; }
+    .nav { display:flex; padding:10px 18px 18px; border-top:1px solid var(--line); gap:8px; }
+    .nav[hidden] { display:none; }
+    .nav button { flex:1; background:white; border:0; border-radius:13px; padding:10px 5px; color:#687d7f; font-weight:700; }
+    .nav button.active { background:#e8f7f5; color:#075f65; }
+    .flow { padding:17px 24px 22px; background:#f7fbfa; border-top:1px solid var(--line); }
+    .flow-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .flow-head span { font-size:12px; color:var(--muted); font-weight:750; }
+    .flow-bar { height:5px; background:#d9e9e7; border-radius:99px; overflow:hidden; flex:1; max-width:115px; }
+    .flow-bar span { display:block; height:100%; background:#0c8585; }
+    .flow-actions { display:flex; gap:10px; }
+    .flow-actions button { flex:1; }
+    .flow-help { font-size:12px; color:var(--muted); margin:0 0 12px; }
+    @media(max-width:500px) { .wrap { padding:0; display:block; } .app { border:0; border-radius:0; min-height:100dvh; box-shadow:none; } main { padding:10px 20px 24px; } .app-header { padding:20px 20px 10px; } .hero { padding:18px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <div class="app" aria-label="Water Companion prototype">
+        <header class="app-header"><div class="brand"><span class="brand-mark" aria-hidden="true">◕</span>Water Companion</div><span class="top-badge">Prototype</span></header>
+        <main id="screen" aria-live="polite"></main>
+        <nav class="nav" id="mainNav" aria-label="Main navigation" hidden><button id="homeNav" data-action="home">Home</button><button id="friendsNav" data-action="friends">Friends</button></nav>
+        <div class="flow" id="flow" aria-label="Prototype screen navigation"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      // Hosts may alternate the two screen orders by sharing the normal URL
+      // or the same URL with ?order=2. This does not expose scenario labels.
+      const reverse = new URLSearchParams(location.search).get('order') === '2';
+      const sequence = ['welcome',...(reverse?['1B','1A']:['1A','1B']),
+        '2A','2B-free','2B-ability','3A','3B',...(reverse?['3D','3C']:['3C','3D']),'done'];
+      const fresh = () => ({ mode:'welcome', step:0, total:0, history:[], reminder:'', submenu:false, friend:false, sharing:false });
+      let s = fresh();
+      const el = document.getElementById('screen');
+      const fmt = n => Number(n).toLocaleString('en-AU');
+      const slim = (level, amount, width) => {
+        const fillY = 179 - Math.min(1,amount/2000)*146;
+        return `<svg class="slime" style="width:${width}px" viewBox="0 0 210 190" role="img" aria-label="Water companion, level ${level}, ${fmt(amount)} of 2,000 millilitres today">
+          <defs><clipPath id="bodyClip"><path d="M105 10 C142 10 159 30 166 58 C172 78 183 103 184 132 C184 163 152 181 105 181 C58 181 26 163 26 132 C27 103 39 78 44 58 C51 30 68 10 105 10 Z"/></clipPath></defs>
+          <path d="M105 10 C142 10 159 30 166 58 C172 78 183 103 184 132 C184 163 152 181 105 181 C58 181 26 163 26 132 C27 103 39 78 44 58 C51 30 68 10 105 10 Z" fill="#c7ebe9" stroke="#65b8ba" stroke-width="4"/>
+          <rect x="20" y="${fillY}" width="170" height="170" fill="#49bed4" clip-path="url(#bodyClip)"/>
+          <path d="M59 49 C68 26 88 23 98 22" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" opacity=".55"/>
+          <circle cx="81" cy="99" r="5.5" fill="#22565d"/><circle cx="129" cy="99" r="5.5" fill="#22565d"/>
+          <path d="M95 116 Q105 126 115 116" fill="none" stroke="#22565d" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="65" cy="111" r="8" fill="#f4aaa4" opacity=".55"/><circle cx="145" cy="111" r="8" fill="#f4aaa4" opacity=".55"/>
+        </svg>`;
+      };
+      const hero = (level,total,width,streak='') => `<div class="hero">
+        <div class="slime-area">${slim(level,total,width)}</div>
+        <div class="hero-row"><div><span class="stat-label">YOUR COMPANION</span><strong>Level ${level}</strong></div><div style="text-align:right"><span class="stat-label">TODAY'S WATER</span><strong>${fmt(total)} / 2,000 ml</strong></div></div>
+        <div class="progress" role="progressbar" aria-label="Today's water" aria-valuemin="0" aria-valuemax="2000" aria-valuenow="${total}"><span style="width:${Math.min(100,100*total/2000)}%"></span></div>
+        ${streak ? `<p class="section-note" style="text-align:left;margin-top:10px">${streak}</p>` : ''}
+      </div>`;
+      const title = (eyebrow,heading,sub='') => `<span class="eyebrow">${eyebrow}</span><h1>${heading}</h1>${sub ? `<p class="muted">${sub}</p>` : ''}`;
+      function render() {
+        let html = '';
+        const mode=s.mode;
+        if(mode==='welcome') html = title('Prototype test','Welcome to Water Companion','Your interviewer will guide you through a few screens and ask what you think.') + `<div class="hero" style="padding:42px 24px"><div style="font-size:72px" aria-hidden="true">💧</div><h2>A preview with simulated information</h2><p>You can try the buttons and tell us what you notice. We are testing the prototype, not you.</p></div><div class="card soft"><p>You may skip a task or stop at any time. Please continue to the next screen when your interviewer asks you to.</p></div>`;
+        if(mode==='home') html = title('Home','Your water companion','A small space to see your progress today.') + hero(1,s.total,145) + `<div class="card soft"><div class="row"><div><h2>Friends</h2><p class="muted">${s.friend ? 'One friend connected' : 'No friends invited yet'}</p></div><span class="pill ${s.sharing?'':'off'}">${s.sharing?'Sharing on':'Private use'}</span></div><button class="secondary" data-action="friends">View friends</button></div>`;
+        if(mode==='1A') html = title('Today','Your companion') + hero(1,1750,142) + `<div class="card soft"><strong>Keep going at your own pace.</strong></div>`;
+        if(mode==='1B') html = title('Today','Your companion') + hero(17,500,215) + `<div class="card soft"><strong>Keep going at your own pace.</strong></div>`;
+        if(mode==='2A') html = title('Today','Your water','Record what you drink as you go.') + hero(1,s.total,165) + `<div class="card"><h2>Water log</h2><p class="muted">Add a glass to today's total.</p><div class="actions"><button class="primary" data-action="add250">+ 250 ml</button><button class="quiet" data-action="undo" ${s.history.length?'':'disabled'}>Undo last entry</button></div>${s.history.length?'<p class="notice">250 ml added to today’s water log.</p>':''}</div>`;
+        if(mode==='2B-free' || mode==='2B-ability') {
+          html = title('Reminder','Time for a water break?','Your reminder is here. Choose what works for you right now.') + `<div class="hero" style="padding:25px"><div style="font-size:68px" aria-hidden="true">💧</div><h2>Water reminder</h2><p>Take a moment for some water when you can.</p></div>`;
+          if(!s.reminder && !s.submenu) html += `<div class="card"><h2>What would you like to do?</h2><button class="choice" data-action="drink">I drank water <span aria-hidden="true">›</span></button><button class="choice" data-action="notnow">Not now <span aria-hidden="true">›</span></button><button class="choice" data-action="skip">Skip this reminder <span aria-hidden="true">›</span></button></div>`;
+          if(s.submenu) html += `<div class="card"><h2>Remind me again in...</h2><button class="choice" data-action="snooze5">5 minutes <span aria-hidden="true">›</span></button><button class="choice" data-action="snooze10">10 minutes <span aria-hidden="true">›</span></button><button class="choice" data-action="snooze30">30 minutes <span aria-hidden="true">›</span></button><button class="quiet" data-action="backReminder">Back</button></div>`;
+          if(s.reminder) html += `<div class="card soft" role="status"><h2>${s.reminder}</h2><p>You can carry on with what you were doing.</p></div>`;
+        }
+        if(mode==='3A') html = title('Friends','Stay connected, your way','Your friends space is ready when you are.') + `<div class="card"><h2>No friends yet</h2><p class="muted">You haven't invited anyone. Inviting a friend is optional.</p><button class="secondary" data-action="inviteInfo">Invite a friend</button></div><div class="card soft"><span class="pill off">Private use</span><p>Only you can see your progress right now.</p></div>`;
+        if(mode==='3B' || mode==='friends') html = title('Friends','Sharing settings','Choose whether your connected friend sees an update.') + `<div class="card"><div class="row"><div><h2>Connected friend</h2><p class="muted">Alex · friend</p></div><span class="pill ${s.sharing?'':'off'}">${s.sharing?'Sharing on':'Private use'}</span></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><button class="toggle-row" data-action="toggleShare" role="switch" aria-checked="${s.sharing}" aria-label="Share progress with friend"><span><strong>Share my progress</strong><br><span class="section-note">You can change this any time.</span></span><span class="switch ${s.sharing?'':'off'}" aria-hidden="true"></span></button></div><div class="friend-preview"><strong>What Alex can see ${s.sharing?'':'when sharing is on'}</strong><ul><li>Your companion level</li><li>Whether you met today's water goal</li></ul><p class="section-note">Your exact water amount is never shown to friends.</p></div>${s.sharing?'<p class="section-note">Sharing is on.</p>':'<p class="notice">Private use is on. Alex cannot see your updates.</p>'}`;
+        if(mode==='3C') html = title('Today','Your companion') + hero(12,750,195,'Streak: 0 days') + `<div class="card warn"><span class="pill warn">Streak ended</span><h2 style="margin-top:12px">A new start today</h2><p>Your daily streak ended after a missed day. You can start again whenever you like.</p></div>`;
+        if(mode==='3D') html = title('Today','Your companion') + hero(11,750,185) + `<div class="card warn"><span class="pill warn">Level change</span><h2 style="margin-top:12px">Level 12 → Level 11</h2><p>Your companion's level has gone down. You can continue from here.</p></div>`;
+        if(mode==='done') html = title('Prototype test','You have reached the end') + `<div class="hero" style="padding:45px 24px"><div style="font-size:70px" aria-hidden="true">✓</div><h2>Thank you for exploring</h2><p>Your interviewer may have one final question.</p></div><p class="section-note">This page has not sent or saved your answers.</p>`;
+        el.innerHTML=html;
+        document.getElementById('mainNav').hidden = s.step!==7;
+        document.getElementById('homeNav').classList.toggle('active',mode==='home');
+        document.getElementById('friendsNav').classList.toggle('active',mode!=='home');
+        const atStart=s.step===0, atEnd=s.step===sequence.length-1;
+        document.getElementById('flow').innerHTML=`<div class="flow-head"><span>${atStart?'Introduction':atEnd?'Finished':`Screen ${s.step} of 9`}</span><div class="flow-bar" aria-hidden="true"><span style="width:${Math.round(s.step/(sequence.length-1)*100)}%"></span></div></div><p class="flow-help">${atEnd?'You can close this page now.':'Move on when your interviewer asks you to.'}</p><div class="flow-actions">${s.step>0&&!atEnd?'<button class="quiet" data-action="previous">Previous screen</button>':''}<button class="${atEnd?'secondary':'primary'}" data-action="${atEnd?'restart':'advance'}">${atEnd?'Start again':atStart?'Start':'Continue'}</button></div>`;
+      }
+      function go(step) {
+        s.step=Math.min(sequence.length-1,Math.max(0,step));
+        s.mode=sequence[s.step];
+        if(s.mode==='2A') {s.total=750;s.history=[];}
+        if(s.mode.startsWith('2B-')) {s.reminder='';s.submenu=false;}
+        if(s.mode==='3A') {s.friend=false;s.sharing=false;}
+        if(s.mode==='3B') {s.friend=true;s.sharing=true;}
+        render(); window.scrollTo(0,0);
+      }
+      document.addEventListener('click',e=>{
+        const btn=e.target.closest('button'); if(!btn) return;
+        switch(btn.dataset.action) {
+          case 'advance': go(s.step+1);break;
+          case 'previous': go(s.step-1);break;
+          case 'restart': s=fresh();render();window.scrollTo(0,0);break;
+          case 'home': s.mode='home';render();break;
+          case 'friends': s.mode='3B';render();break;
+          case 'add250': s.history.push(250);s.total+=250;render();break;
+          case 'undo': if(s.history.length) s.total-=s.history.pop();render();break;
+          case 'notnow': s.submenu=true;render();break;
+          case 'backReminder': s.submenu=false;render();break;
+          case 'snooze5': case 'snooze10': case 'snooze30': s.reminder=`Reminder set for ${btn.dataset.action.slice(6)} minutes from now.`;s.submenu=false;render();break;
+          case 'skip': s.reminder='Reminder skipped.';render();break;
+          case 'drink': s.reminder='Thanks for checking in.';render();break;
+          case 'toggleShare': s.sharing=!s.sharing;render();break;
+          case 'inviteInfo': alert('Inviting a friend is optional. This demonstration does not send invitations.');break;
+        }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
